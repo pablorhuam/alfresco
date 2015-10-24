@@ -9,7 +9,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -101,9 +100,6 @@ public class Alfresco {
 
 		// The name of the file to open.
 		String fileName = path;
-
-		// This will reference one line at a time
-		String line = null;
 
 		try {
 			// FileReader reads text files in the default encoding.
@@ -205,9 +201,6 @@ public class Alfresco {
 
 	}
 
-	public static void retrieveMetadataGET() {
-	}
-
 	public static String getFiles(String folder) {
 		String files = null;
 		String ticket = getAlfrescoTicket(null, null, null);
@@ -240,14 +233,14 @@ public class Alfresco {
 			JsonObject jsob = Json.createReader(new StringReader(result))
 					.readObject();
 			JsonArray jarr = jsob.getJsonArray("objects");
-			ArrayList arrayObj = new ArrayList<JsonObject>();
+			ArrayList<JsonObject> arrayObj = new ArrayList<JsonObject>();
 			for (JsonValue value : jarr){
 				JsonObject jsobj = (JsonObject) value;
 				JsonObject jprop = jsobj.getJsonObject("object").getJsonObject("properties").getJsonObject("cmis:name");
 				arrayObj.add(jprop);
 			}
 			int idx ;
-			ArrayList arrayMetaData = new ArrayList<JsonObject>();
+			ArrayList<JsonObject> arrayMetaData = new ArrayList<JsonObject>();
 			for (int i = 0; i < arrayObj.size(); i++) {
 				JsonObject jobj = (JsonObject) arrayObj.get(i);
 				String value = jobj.getJsonString("value").toString().replace("\"","").replace(" ", "%20");
@@ -348,9 +341,8 @@ public class Alfresco {
 	}
 	public static String getResConection(String webUrl) throws IOException {
 		String webPage = null;
-		String files = null;
 		webPage = webUrl;
-		String ticket = getAlfrescoTicket(null, null, null);
+		//String ticket = getAlfrescoTicket(null, null, null);
 		String name = "admin";
 		String password = "admin";
 
@@ -367,128 +359,9 @@ public class Alfresco {
 		try (JsonReader reader = Json.createReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8))){
 			jsst = reader.read();
 		}
-//		InputStream is = urlConnection.getInputStream();
-//		InputStreamReader isr = new InputStreamReader(is, "iso-8859-1");
-//
-//		int numCharsRead;
-//		char[] charArray = new char[1024];
-//		StringBuffer sb = new StringBuffer();
-//		while ((numCharsRead = isr.read(charArray)) > 0) {
-//			sb.append(charArray, 0, numCharsRead);
-//		}
-//		String result = sb.toString();
+
 		System.out.println(jsst.toString());
 		return jsst.toString();
-	}
-
-	public static void uploadFileToAlfresco() {
-
-		/**
-		 * Local directory containing JPG files
-		 */
-		final String FILE_PATH = "/users/jpotts/Documents/sample/photos/Berlin";
-
-		/**
-		 * Code assumes that every file is of the type below
-		 */
-		final String FILE_TYPE = "image/jpeg";
-
-		/**
-		 * Files will be uploaded to this folder, which resides in the folder
-		 * returned by super.getParentFolder()
-		 */
-		final String FOLDER_NAME = "Art";
-		// try{
-		// String URL =
-		// "http://172.18.23.64:8080/alfresco/service/api/upload/?alf_ticket = "
-		// + getAlfrescoTicket(null, null, null);
-		//
-		// // PDFDocument pdfD = null;
-		// // try {
-		// // pdfD = new PDFDocument(new URL("C:/PDF_TEST.pdf"));
-		// // } catch (Exception e1) {
-		// // // TODO Auto-generated catch block
-		// // e1.printStackTrace();
-		// // }
-		//
-		// File file = new File("C:/PDF_TEST.pdf");
-		//
-		// String filetype = "application/pdf";
-		//
-		// String filename="Test_Upload.pdf";
-		//
-		//
-		// URL restServiceURL = new URL(URL==null ?
-		// "http://172.18.23.64:8080/alfresco/service/api/login" : URL);
-		//
-		// HttpURLConnection httpConnection = (HttpURLConnection)
-		// restServiceURL.openConnection();
-		// httpConnection.setRequestMethod("POST");
-		// httpConnection.setRequestProperty("Accept", "application/json");
-		// httpConnection.setRequestProperty("Content-Type",
-		// "application/json");
-		// httpConnection.setDoInput(true);
-		// httpConnection.setDoOutput(true);
-		//
-		//
-		// CloseableHttpClient client = HttpClientBuilder.create().build();
-		//
-		// PostMethod post = new PostMethod(URL);
-		//
-		// Part[] parts = null;
-		//
-		// parts = new Part[]{
-		//
-		// new FilePart("filedata", filename, file, filetype, null),
-		//
-		// new StringPart("filename", filename),
-		//
-		// new StringPart("description", "description"),
-		//
-		// new StringPart("siteid", "yoursite"),
-		//
-		// new StringPart("containerid", "documentLibrary")
-		//
-		// // your can add more paramter here
-		//
-		// //new StringPart("uploaddirectory", "documentLibrary"),
-		//
-		// //new StringPart("updatenoderef", "updatenoderef"),
-		//
-		// //new StringPart("contenttype", "contenttype"),
-		//
-		// //new StringPart("aspects", "aspects")
-		//
-		//
-		//
-		// };
-		//
-		//
-		// post.setRequestEntity(new MultipartRequestEntity(parts,
-		// post.getParams()));
-		//
-		// try {
-		// int status = client.execute(post);
-		// } catch (HttpException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		//
-		// try {
-		// System.out.println(post.getResponseBodyAsString());
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		//
-		// post.releaseConnection();
-		// }
-		// catch(Exception e){
-		// e.printStackTrace();
-		// }
 	}
 
 	public static void main(String[] args) throws IOException {
