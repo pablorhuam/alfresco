@@ -1,4 +1,6 @@
 import java.io.IOException;
+
+import javax.mail.MessagingException;
 public class Program {
 
 	public static void main(String[] args) throws IOException{
@@ -7,14 +9,19 @@ public class Program {
 		System.out.println(urlFile);
 		Alfresco metadata = new Alfresco();
 		metadata.storeAlfrescoMetadata();
-//		BuildWebiDocument reportWebI = new BuildWebiDocument();
-//		reportWebI.generateWebIntelligenceReportByUser();
-//		exportToPDF exportPdf = new exportToPDF();
-//		exportPdf.exportReportsAsPDF();
-//		fileUpd.uploadFileToAlfresco();
+		BuildWebiDocument reportWebI = new BuildWebiDocument();
+		reportWebI.generateWebIntelligenceReportByUser();
+		exportToPDF exportPdf = new exportToPDF();
+		exportPdf.exportReportsAsPDF();
+		fileUpd.uploadFileToAlfresco();
 		//getUserEmailAddresses();
 		EmailHandler email = new EmailHandler("smtp.office365.com", "587", "prhua@agilesolutions.com");
-		email.notifyUsers(urlFile);
+		try {
+			email.sendEmail("prhua@agilesolutions.com", "Joya0804", "Email teste");
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
