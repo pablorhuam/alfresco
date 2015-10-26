@@ -363,7 +363,10 @@ public class Alfresco {
 		System.out.println(jsst.toString());
 		return jsst.toString();
 	}
-
+	public static void storeAlfrescoMetadata () throws IOException{
+		deleteMetadata();
+		getFiles("files");
+	}
 	public static void main(String[] args) throws IOException {
 		// String ticket = getAlfrescoTicket(null, null, null);
 		// System.out.println(ticket);

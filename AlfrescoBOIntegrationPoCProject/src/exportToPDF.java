@@ -30,7 +30,7 @@ public class exportToPDF {
 		// Authentification innformation
 		String user = "Administrator";
 		String pwd = "Manager00";
-		String CMS = "AS1-300-89:6400";
+		String CMS = "as1-300-89:6400";
 		String auth = "secEnterprise";
 
 		// Session manager to make the connection with SAP BO
@@ -47,7 +47,7 @@ public class exportToPDF {
 
 		// Retrieve webi reports on SAP BO
 		IInfoStore infoStore = (IInfoStore) enterpriseSession.getService("InfoStore");
-		String query = "select * from CI_INFOOBJECTS where SI_KIND = 'Webi'";
+		String query = "select * from CI_INFOOBJECTS where SI_KIND = 'Webi' and SI_NAME = 'AlfrescoWebIReportWithMetadata'";//"select * from CI_INFOOBJECTS where SI_KIND = 'Webi'";
 		IInfoObjects infoObjects = (IInfoObjects) infoStore.query(query);
 		IInfoObject infoObject = (IInfoObject) infoObjects.get(0);
 		
@@ -56,7 +56,7 @@ public class exportToPDF {
 		// Create document instance
 		DocumentInstance doc = reportEngine.openDocument(infoObject.getID());
 
-		doc.refresh();
+//		doc.refresh();
 
 		// Format to PDF
 		BinaryView binaryView2 = (BinaryView) doc.getView(OutputFormatType.PDF);
@@ -79,7 +79,61 @@ public class exportToPDF {
 			System.out.println(e);
 		}
 	}
+	public static void exportReportsAsPDF(){
+		try
+		{
+		// Authentification innformation
+		String user = "Administrator";
+		String pwd = "Manager00";
+		String CMS = "as1-300-89:6400";
+		String auth = "secEnterprise";
 
+		// Session manager to make the connection with SAP BO
+		ISessionMgr sessionManager = CrystalEnterprise.getSessionMgr();
+		IEnterpriseSession enterpriseSession = sessionManager.logon(user, pwd, CMS, auth);
+
+//		IUserInfo userInfo = null;
+//		userInfo = enterpriseSession.getUserInfo();
+
+		// Create Report Engine instance
+		ReportEngines reportEngines = (ReportEngines) enterpriseSession.getService("ReportEngines");
+		ReportEngine reportEngine = (ReportEngine) reportEngines
+				.getService(ReportEngines.ReportEngineType.WI_REPORT_ENGINE);
+
+		// Retrieve webi reports on SAP BO
+		IInfoStore infoStore = (IInfoStore) enterpriseSession.getService("InfoStore");
+		String query = "select * from CI_INFOOBJECTS where SI_KIND = 'Webi' and SI_NAME = 'AlfrescoWebIReportWithMetadata'";//"select * from CI_INFOOBJECTS where SI_KIND = 'Webi'";
+		IInfoObjects infoObjects = (IInfoObjects) infoStore.query(query);
+		IInfoObject infoObject = (IInfoObject) infoObjects.get(0);
+		
+		String title = infoObject.getTitle();
+
+		// Create document instance
+		DocumentInstance doc = reportEngine.openDocument(infoObject.getID());
+
+//		doc.refresh();
+
+		// Format to PDF
+		BinaryView binaryView2 = (BinaryView) doc.getView(OutputFormatType.PDF);
+		File pdf = writeBytes(binaryView2.getContent(), title + ".pdf");
+
+		String alfrescoTiccketURL = "http://172.18.23.64:8080/alfresco" + "/service/api/login?u=" + "admin" + "&pw="
+				+ "admin";
+		String ticketURLResponse = getTicket(alfrescoTiccketURL);
+
+		uploadDocument(ticketURLResponse, pdf, title + ".pdf", "application/pdf", "description",
+				"workspace://SpacesStore/60273b3a-b9f2-42d9-bc2d-9697246bdacd");
+
+		doc.closeDocument();
+
+		reportEngines.close();
+		enterpriseSession.logoff();
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+	}
 	public static File writeBytes(byte[] data, String filename) throws IOException {
 		File file = new File(filename);
 		FileOutputStream fstream = new FileOutputStream(file);
