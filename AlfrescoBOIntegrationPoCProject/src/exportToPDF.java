@@ -47,7 +47,7 @@ public class exportToPDF {
 
 		// Retrieve webi reports on SAP BO
 		IInfoStore infoStore = (IInfoStore) enterpriseSession.getService("InfoStore");
-		String query = "select * from CI_INFOOBJECTS where SI_KIND = 'Webi' and SI_NAME = 'AlfrescoWebIReportWithMetadata'";//"select * from CI_INFOOBJECTS where SI_KIND = 'Webi'";
+		String query = "select * from CI_INFOOBJECTS where SI_KIND = 'Webi' and SI_NAME = 'AlfrescoWebIReportWithMetadata'";
 		IInfoObjects infoObjects = (IInfoObjects) infoStore.query(query);
 		IInfoObject infoObject = (IInfoObject) infoObjects.get(0);
 		
@@ -102,7 +102,7 @@ public class exportToPDF {
 
 		// Retrieve webi reports on SAP BO
 		IInfoStore infoStore = (IInfoStore) enterpriseSession.getService("InfoStore");
-		String query = "select * from CI_INFOOBJECTS where SI_KIND = 'Webi' and SI_NAME = 'AlfrescoWebIReportWithMetadata'";//"select * from CI_INFOOBJECTS where SI_KIND = 'Webi'";
+		String query = "select * from CI_INFOOBJECTS where SI_KIND = 'Webi' and SI_NAME = 'AlfrescoWebIReportWithMetadata'";
 		IInfoObjects infoObjects = (IInfoObjects) infoStore.query(query);
 		IInfoObject infoObject = (IInfoObject) infoObjects.get(0);
 		

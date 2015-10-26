@@ -61,7 +61,7 @@ public class FileUpload {
 //		File f = new File("C:\\Users\\c5185151\\hdbstudio\\AlfrescoBOIntegrationPoCProject\\src\\fileToBeLoaded.xml");
 		File f = new File("src/fileToBeLoaded.xml");
 
-		 return uploadDocument(ticketURLResponse, f, "lala.txt", "application/text", "description", "workspace://SpacesStore/703c595e-240b-4a06-bf33-999160fc1446");
+		 return uploadDocument(ticketURLResponse, f, "lala2.txt", "application/text", "description", "workspace://SpacesStore/703c595e-240b-4a06-bf33-999160fc1446");
 	}
 	public static void main(String args[]) throws IOException {
 		String ticketURLResponse = "";

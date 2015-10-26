@@ -9,19 +9,16 @@ public class Program {
 		System.out.println(urlFile);
 		Alfresco metadata = new Alfresco();
 		metadata.storeAlfrescoMetadata();
-		BuildWebiDocument reportWebI = new BuildWebiDocument();
-		reportWebI.generateWebIntelligenceReportByUser();
+//		BuildWebiDocument reportWebI = new BuildWebiDocument();
+//		reportWebI.generateWebIntelligenceReportByUser();
 		exportToPDF exportPdf = new exportToPDF();
 		exportPdf.exportReportsAsPDF();
 		fileUpd.uploadFileToAlfresco();
-		//getUserEmailAddresses();
-		EmailHandler email = new EmailHandler("smtp.office365.com", "587", "prhua@agilesolutions.com");
-		try {
-			email.sendEmail("prhua@agilesolutions.com", "Joya0804", "Email teste");
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		StringBuilder message = new StringBuilder();
+		message.append("This is a example message.");
+		message.append("This is the alfresco weblink for the file you uploaded:" + urlFile);
+		
+		Alfresco.notifyAlfrescoUsers(Alfresco.getAlfrescoUsers(), message.toString());
 	}
-
 }
