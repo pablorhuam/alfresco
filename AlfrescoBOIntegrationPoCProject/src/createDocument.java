@@ -1,30 +1,14 @@
-import com.crystaldecisions.sdk.plugin.authentication.enterprise.IsecEnterprise;
-import com.crystaldecisions.sdk.plugin.authentication.ldap.IsecLDAP;
 import com.crystaldecisions.sdk.framework.IEnterpriseSession;
 import com.crystaldecisions.sdk.framework.ISessionMgr;
-import com.crystaldecisions.sdk.framework.ITrustedPrincipal;
-import com.crystaldecisions.sdk.occa.security.IEnterpriseLogonInformation;
 import com.crystaldecisions.sdk.occa.security.ILogonTokenMgr;
 import com.crystaldecisions.sdk.framework.CrystalEnterprise;
-import com.crystaldecisions.sdk.exception.SDKException;
 import com.crystaldecisions.sdk.occa.infostore.IInfoStore;
-import com.crystaldecisions.sdk.occa.security.IUserInfo;
-import com.crystaldecisions.sdk.occa.infostore.CeSecurityID;
 import com.crystaldecisions.sdk.occa.infostore.IInfoObjects;
 import com.crystaldecisions.sdk.occa.infostore.IInfoObject;
 //import com.crystaldecisions.sdk.plugin.desktop.server;
 import com.businessobjects.rebean.wi.ReportEngines;
 import com.businessobjects.rebean.wi.ReportEngine;
 import com.businessobjects.rebean.wi.DocumentInstance;
-import com.businessobjects.rebean.wi.DataProviders;
-import com.businessobjects.rebean.wi.DataProvider;
-import com.businessobjects.rebean.wi.Query;
-import com.businessobjects.rebean.wi.DataSource;
-import com.crystaldecisions.sdk.plugin.CeKind;
-import com.businessobjects.rebean.wi.ReportBlock;
-import com.businessobjects.rebean.wi.ReportBody;
-import com.businessobjects.rebean.wi.ReportContainer;
-import com.businessobjects.rebean.wi.ReportStructure;
 
 public class createDocument {
 	public static void main(String[] args) {
@@ -55,6 +39,8 @@ public class createDocument {
 		// Locate the desired universe that is going to be used on the document
 		IInfoStore infoStore = (IInfoStore) enterpriseSession.getService("InfoStore");
 		String unvQuery = "select * from CI_APPOBJECTS where SI_KIND = 'Universe' and SI_NAME like '%eFashion%'";
+		//String unvQuery = "SELECT * FROM CI_APPOBJECTS WHERE SI_NAME like '%AlfrescoBusinessLayer%'";
+		
 		IInfoObjects infoObjects = (IInfoObjects) infoStore.query(unvQuery);
 		IInfoObject infoObject = (IInfoObject) infoObjects.get(0);
 
