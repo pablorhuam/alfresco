@@ -1,21 +1,30 @@
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
+
+import javax.json.Json;
+import javax.json.JsonReader;
+
 import java.io.FileOutputStream;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.auth.CredentialsProvider;
 
 public class exportToPDFAPI {
 	
-	public static void main(String[] args) {
+	public static String exportReportAndUploadIntoAlfredo()
+	{
+		String fileAccessLink = "";
 		try{
 			String urlString = "http://as1-300-89:6405/biprws/logon/long";
 			HttpClient client = new HttpClient();
@@ -32,11 +41,24 @@ public class exportToPDFAPI {
 			getToken.setRequestEntity(requestEntity);
 			
 			int statusCode1 = client.executeMethod(getToken);
+			
 			System.out.println("statusLine>>>" + statusCode1 + "......" + "\n status line \n" + getToken.getStatusLine()
 					+ "\nbody \n" + getToken.getResponseBodyAsString());
 			
 			String sessionToken = getToken.getResponseBodyAsString();
 			sessionToken = sessionToken.substring(sessionToken.indexOf("AS1")-1,sessionToken.length()-1);
+			
+			String refreshString = "http://as1-300-89:6405/biprws/raylight/v1/documents/6391/parameters";
+			
+			PutMethod refreshDocument = new PutMethod(refreshString);
+
+			refreshDocument.addRequestHeader("Accept","application/json");
+			refreshDocument.addRequestHeader("Content-Type","application/json");
+			refreshDocument.addRequestHeader("X-SAP-LogonToken", sessionToken);
+
+			int statusCodeRef = client.executeMethod(refreshDocument);
+			System.out.println("statusLine>>>" + statusCodeRef + "......" + "\n status line \n" + refreshDocument.getStatusLine()
+			  + "\nbody \n" + refreshDocument.getResponseBodyAsString());
 			
 			String exportString = "http://as1-300-89:6405/biprws/raylight/v1/documents/6391/";
 			GetMethod getPDF = new GetMethod(exportString);
@@ -45,6 +67,7 @@ public class exportToPDFAPI {
 			getPDF.addRequestHeader("X-SAP-LogonToken", sessionToken);
 			
 			int statusCode2 = client.executeMethod(getPDF);
+			
 			System.out.println("statusLine>>>" + statusCode2 + "......" + "\n status line \n" + getPDF.getStatusLine());
 			
 			File pdf = writeBytes(getPDF.getResponseBody(), "AlfrescoWebIReportWithMetadata");
@@ -53,7 +76,7 @@ public class exportToPDFAPI {
 					+ "admin";
 			String ticketURLResponse = getTicket(alfrescoTiccketURL);
 
-			uploadDocument(ticketURLResponse, pdf, "AlfrescoWebIReportWithMetadata.pdf", "application/pdf", "description",
+			fileAccessLink = uploadDocument(ticketURLResponse, pdf, "AlfrescoWebIReportWithMetadata.pdf", "application/pdf", "description",
 					"workspace://SpacesStore/60273b3a-b9f2-42d9-bc2d-9697246bdacd");
 			
 			String logOffString = "http://as1-300-89:6405/biprws/logoff";
@@ -72,6 +95,11 @@ public class exportToPDFAPI {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
+		return fileAccessLink;
+	}
+	
+	public static void main(String[] args) {
+		
 	}
 	
 	public static File writeBytes(byte[] data, String filename) throws IOException {
@@ -82,8 +110,9 @@ public class exportToPDFAPI {
 		return file;
 	}
 	
-	public static void uploadDocument(String authTicket, File fileobj, String filename, String filetype,
+	public static String uploadDocument(String authTicket, File fileobj, String filename, String filetype,
 			String description, String destination) {
+		String nodeRef="";
 		try {
 
 			String urlString = "http://172.18.23.64:8080/alfresco/service/api/upload?alf_ticket=" + authTicket;
@@ -96,12 +125,21 @@ public class exportToPDFAPI {
 					new StringPart("destination", destination), new StringPart("description", description), };
 			mPost.setRequestEntity(new MultipartRequestEntity(parts, mPost.getParams()));
 			int statusCode1 = client.executeMethod(mPost);
+			
+			String responseBody = mPost.getResponseBodyAsString();
 			System.out.println("statusLine>>>" + statusCode1 + "......" + "\n status line \n" + mPost.getStatusLine()
-					+ "\nbody \n" + mPost.getResponseBodyAsString());
+					+ "\nbody \n" + responseBody);
+			
+		
+
 			mPost.releaseConnection();
+			 nodeRef = responseBody.substring(responseBody.indexOf("\"nodeRef\":"), responseBody.indexOf(",", responseBody.indexOf("\"nodeRef\":"))).replaceAll("\"", "");
+			
+			return nodeRef.replaceAll("nodeRef: ", "");
 		} catch (Exception e) {
 			System.out.println(e);
 		}
+		return nodeRef;
 	}
 
 	public static String getTicket(String url) throws IOException {

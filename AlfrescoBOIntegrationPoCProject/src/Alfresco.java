@@ -326,7 +326,7 @@ public class Alfresco {
 	public static void notifyAlfrescoUsers(List<AlfrescoUser> users, String urlFile) {
 		StringBuilder mess = new StringBuilder();
 		mess.append("This is a example message.");
-		mess.append("This is the alfresco weblink for the file you uploaded:" + urlFile);
+		mess.append("This is the alfresco weblink for the file you uploaded:" + "<a href=\"http://172.18.23.64:8080/share/page/document-details?nodeRef=" + urlFile + "\">Click here to access your report</a>"); 
 		String message = mess.toString();
 		EmailHandler emailHandler = new EmailHandler("smtp.office365.com", "587", "prhua@agilesolutions.com");
 		try {
@@ -334,6 +334,7 @@ public class Alfresco {
 			String webUrl = "http://172.18.23.64:8080/alfresco/service/api/version?nodeRef=workspace://SpacesStore/" + arrUrl[1];
 			System.out.println(webUrl);
 			String resConn = getResConection(webUrl);
+			
 			JsonArray jarr = Json.createReader(new StringReader(resConn)).readArray();
 			jarr.getJsonObject(0);
 			String fileUserName = jarr.getJsonObject(0).getJsonObject("creator").getString("firstName");
@@ -341,12 +342,13 @@ public class Alfresco {
 				AlfrescoUser alfrescoUser = (AlfrescoUser) iterator.next();
 				System.out.println(fileUserName);
 				System.out.println(alfrescoUser.firstName);
-				if (alfrescoUser.canBeNotified()  && fileUserName == alfrescoUser.firstName) {
+				//if (alfrescoUser.canBeNotified()  && fileUserName == alfrescoUser.firstName) {
+				if (alfrescoUser.canBeNotified()) {
 					System.out.println("Notifying user:" + alfrescoUser.email);
 					System.out.println("Message: " + message);
 					System.out.println("User:" + alfrescoUser.userName);
 					System.out.println("FirstName:" + alfrescoUser.firstName);
-//					emailHandler.sendEmail(alfrescoUser.email, "Joya0804", message);
+					emailHandler.sendEmail(alfrescoUser.email, "Joya0804", message);
 				}
 			}
 
