@@ -62,7 +62,7 @@ public class EmailHandler {
     public static void main(String[] args) {
     	EmailHandler emailHandler = new EmailHandler("smtp.office365.com", "587", "prhua@agilesolutions.com");
     	try {
-			emailHandler.sendEmail("prhua@agilesolutions.com", "Joya0804", "Email teste");
+			emailHandler.sendEmail("alima@agilesolutions.com", "Joya0804", "Email teste");
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

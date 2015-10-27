@@ -323,16 +323,30 @@ public class Alfresco {
 		return users;
 	}
 
-	public static void notifyAlfrescoUsers(List<AlfrescoUser> users, String message) {
-		
+	public static void notifyAlfrescoUsers(List<AlfrescoUser> users, String urlFile) {
+		StringBuilder mess = new StringBuilder();
+		mess.append("This is a example message.");
+		mess.append("This is the alfresco weblink for the file you uploaded:" + urlFile);
+		String message = mess.toString();
 		EmailHandler emailHandler = new EmailHandler("smtp.office365.com", "587", "prhua@agilesolutions.com");
-    	
 		try {
+			String arrUrl[] = urlFile.split("workspace://SpacesStore/");
+			String webUrl = "http://172.18.23.64:8080/alfresco/service/api/version?nodeRef=workspace://SpacesStore/" + arrUrl[1];
+			System.out.println(webUrl);
+			String resConn = getResConection(webUrl);
+			JsonArray jarr = Json.createReader(new StringReader(resConn)).readArray();
+			jarr.getJsonObject(0);
+			String fileUserName = jarr.getJsonObject(0).getJsonObject("creator").getString("firstName");
 			for (Iterator<AlfrescoUser> iterator = users.iterator(); iterator.hasNext();) {
 				AlfrescoUser alfrescoUser = (AlfrescoUser) iterator.next();
-				if (alfrescoUser.canBeNotified()) {
+				System.out.println(fileUserName);
+				System.out.println(alfrescoUser.firstName);
+				if (alfrescoUser.canBeNotified()  && fileUserName == alfrescoUser.firstName) {
 					System.out.println("Notifying user:" + alfrescoUser.email);
-					emailHandler.sendEmail(alfrescoUser.email, "Joya0804", message);
+					System.out.println("Message: " + message);
+					System.out.println("User:" + alfrescoUser.userName);
+					System.out.println("FirstName:" + alfrescoUser.firstName);
+//					emailHandler.sendEmail(alfrescoUser.email, "Joya0804", message);
 				}
 			}
 
@@ -341,7 +355,9 @@ public class Alfresco {
 			e.printStackTrace();
 		}
 	}
-
+	public static void createFolder(){
+//		 "workspace://SpacesStore/e8d9fd55-9a59-4e5a-81a6-b3c065df96b5",
+	}
 	public static void insertMetadata(String createdDate, String firstName, String name) {
 		try (Connection connection = DriverManager.getConnection("jdbc:mysql://172.18.23.64:3306/alfresco_metadata_db",
 				"root", "abcd1234")) {

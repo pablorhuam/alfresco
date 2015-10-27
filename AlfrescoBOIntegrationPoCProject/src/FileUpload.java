@@ -22,7 +22,8 @@ public class FileUpload {
 		JsonObject jsob = Json.createReader(new StringReader(uploadFileToAlfresco()))
 			.readObject();
 //		uploadFileToAlfresco();
-		System.out.println(jsob.getString("nodeRef"));
+		System.out.println("1234");
+		System.out.println(jsob);
 		return "http://172.18.23.64:8080/share/page/site/ironmountain/document-details?nodeRef=" + jsob.getString("nodeRef");
 	}
 	public static String uploadDocument(String authTicket, File fileobj, String filename, String filetype,
@@ -57,7 +58,7 @@ public class FileUpload {
 	}
 	public static String uploadFileToAlfresco(){
 		String ticketURLResponse = "";
-		ticketURLResponse = "TICKET_d29650ce119af8f9cb0ebbfb0581c40d5697bc1a";
+		ticketURLResponse = "TICKET_de6ca51d8dacedc8cf47333548cc8020c7d86bc4";
 //		File f = new File("C:\\Users\\c5185151\\hdbstudio\\AlfrescoBOIntegrationPoCProject\\src\\fileToBeLoaded.xml");
 		File f = new File("src/fileToBeLoaded.xml");
 
@@ -65,7 +66,7 @@ public class FileUpload {
 	}
 	public static void main(String args[]) throws IOException {
 		String ticketURLResponse = "";
-		ticketURLResponse = "TICKET_a90650eca2418fd2745cfe54c36473850a85813c";
+		ticketURLResponse = "TICKET_de6ca51d8dacedc8cf47333548cc8020c7d86bc4";
 		File f = new File("src/fileToBeLoaded.xml");
 
 //		uploadDocument(ticketURLResponse, f, "testeUpload.txt", "application/text", "description", "workspace://SpacesStore/703c595e-240b-4a06-bf33-999160fc1446");

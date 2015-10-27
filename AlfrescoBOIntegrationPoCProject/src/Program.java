@@ -13,12 +13,7 @@ public class Program {
 //		reportWebI.generateWebIntelligenceReportByUser();
 		exportToPDF exportPdf = new exportToPDF();
 		exportPdf.exportReportsAsPDF();
-		fileUpd.uploadFileToAlfresco();
-		
-		StringBuilder message = new StringBuilder();
-		message.append("This is a example message.");
-		message.append("This is the alfresco weblink for the file you uploaded:" + urlFile);
-		
-		Alfresco.notifyAlfrescoUsers(Alfresco.getAlfrescoUsers(), message.toString());
+		fileUpd.uploadFileToAlfresco();		
+		Alfresco.notifyAlfrescoUsers(Alfresco.getAlfrescoUsers(), urlFile);
 	}
 }
