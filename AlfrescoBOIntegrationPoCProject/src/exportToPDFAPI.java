@@ -48,7 +48,7 @@ public class exportToPDFAPI {
 			String sessionToken = getToken.getResponseBodyAsString();
 			sessionToken = sessionToken.substring(sessionToken.indexOf("AS1")-1,sessionToken.length()-1);
 			
-			String refreshString = "http://as1-300-89:6405/biprws/raylight/v1/documents/6391/parameters";
+			String refreshString = "http://as1-300-89:6405/biprws/raylight/v1/documents/7677/parameters";
 			
 			PutMethod refreshDocument = new PutMethod(refreshString);
 
@@ -60,7 +60,7 @@ public class exportToPDFAPI {
 			System.out.println("statusLine>>>" + statusCodeRef + "......" + "\n status line \n" + refreshDocument.getStatusLine()
 			  + "\nbody \n" + refreshDocument.getResponseBodyAsString());
 			
-			String exportString = "http://as1-300-89:6405/biprws/raylight/v1/documents/6391/";
+			String exportString = "http://as1-300-89:6405/biprws/raylight/v1/documents/7677/";
 			GetMethod getPDF = new GetMethod(exportString);
 			
 			getPDF.addRequestHeader("Accept", "application/pdf");
@@ -99,7 +99,7 @@ public class exportToPDFAPI {
 	}
 	
 	public static void main(String[] args) {
-		
+		exportReportAndUploadIntoAlfredo();
 	}
 	
 	public static File writeBytes(byte[] data, String filename) throws IOException {
