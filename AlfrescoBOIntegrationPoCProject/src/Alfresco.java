@@ -145,7 +145,7 @@ public class Alfresco {
 
 				JsonArray jarr = Json.createReader(new StringReader(result)).readArray();
 				JsonObject jsob = jarr.getJsonObject(0);
-				System.out.println(jsob);
+//				System.out.println(jsob);
 				String firstName = jsob.getJsonObject("creator").getString("firstName");
 				String createdDate = jsob.getString("createdDate");
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.ENGLISH);
@@ -154,8 +154,8 @@ public class Alfresco {
 					Date date = simpleDateFormat.parse(createdDate);
 					ts = new Timestamp(date.getTime());
 
-					System.out.println("firstName : " + firstName);
-					System.out.println("date : " + ts);
+//					System.out.println("firstName : " + firstName);
+//					System.out.println("date : " + ts);
 				} catch (Exception e) {
 					System.out.println(e);
 					e.printStackTrace();
@@ -216,7 +216,7 @@ public class Alfresco {
 				sb.append(charArray, 0, numCharsRead);
 			}
 			String result = sb.toString();
-
+			System.out.println("Do the login and the authorization process");
 			JsonObject jsob = Json.createReader(new StringReader(result)).readObject();
 			JsonArray jarr = jsob.getJsonArray("objects");
 			ArrayList<JsonObject> arrayObj = new ArrayList<JsonObject>();
@@ -250,10 +250,11 @@ public class Alfresco {
 					String nameFile = jarrMetaD.getJsonObject(0).getJsonString("name").getString();
 					String firstName = jarrMetaD.getJsonObject(0).getJsonObject("creator").getJsonString("firstName")
 							.getString();
-					System.out.println(nameFile);
+//					System.out.println(nameFile);
 					insertMetadata(createdData, firstName, nameFile);
 				}
 			}
+			System.out.println("Get the metadata of the uploaded file and insert into MySQL database");
 			for (int z = 0; z < arrayMetaData.size(); z++) {
 				// System.out.println(arrayMetaData.get(z));
 				// ----------------------------
@@ -332,7 +333,7 @@ public class Alfresco {
 		try {
 			String arrUrl[] = urlFile.split("workspace://SpacesStore/");
 			String webUrl = "http://172.18.23.64:8080/alfresco/service/api/version?nodeRef=workspace://SpacesStore/" + arrUrl[1];
-			System.out.println(webUrl);
+//			System.out.println(webUrl);
 			String resConn = getResConection(webUrl);
 			
 			JsonArray jarr = Json.createReader(new StringReader(resConn)).readArray();
@@ -340,19 +341,19 @@ public class Alfresco {
 			String fileUserName = jarr.getJsonObject(0).getJsonObject("creator").getString("firstName");
 			for (Iterator<AlfrescoUser> iterator = users.iterator(); iterator.hasNext();) {
 				AlfrescoUser alfrescoUser = (AlfrescoUser) iterator.next();
-				System.out.println(fileUserName);
-				System.out.println(alfrescoUser.firstName);
+//				System.out.println(fileUserName);
+//				System.out.println(alfrescoUser.firstName);
 				if (alfrescoUser.canBeNotified()) {
 				//if (alfrescoUser.canBeNotified()  && (fileUserName.toLowerCase() == alfrescoUser.firstName.toLowerCase())) {
 				//if (alfrescoUser.canBeNotified()) {
-					System.out.println("Notifying user:" + alfrescoUser.email);
-					System.out.println("Message: " + message);
-					System.out.println("User:" + alfrescoUser.userName);
-					System.out.println("FirstName:" + alfrescoUser.firstName);
+//					System.out.println("Notifying user:" + alfrescoUser.email);
+//					System.out.println("Message: " + message);
+//					System.out.println("User:" + alfrescoUser.userName);
+//					System.out.println("FirstName:" + alfrescoUser.firstName);
 					emailHandler.sendEmail(alfrescoUser.email, "Joya0804", message);
 				}
 			}
-
+			System.out.println("Send the email to the user  with the link to access the pdf");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -371,8 +372,8 @@ public class Alfresco {
 					Date date = simpleDateFormat.parse(createdDate);
 					ts = new Timestamp(date.getTime());
 
-					System.out.println("firstName : " + firstName);
-					System.out.println("date : " + ts);
+//					System.out.println("firstName : " + firstName);
+//					System.out.println("date : " + ts);
 				} catch (Exception e) {
 					System.out.println(e);
 					e.printStackTrace();
@@ -442,7 +443,7 @@ public class Alfresco {
 			jsst = reader.read();
 		}
 
-		System.out.println(jsst.toString());
+//		System.out.println(jsst.toString());
 		return jsst.toString();
 	}
 
