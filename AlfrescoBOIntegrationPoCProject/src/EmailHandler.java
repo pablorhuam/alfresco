@@ -40,7 +40,7 @@ public class EmailHandler {
 
     public void sendEmail(String destination, String password, String messageText) throws MessagingException {
         MimeMessage message = new MimeMessage(session);
-        session.setDebug(true);
+        session.setDebug(false);
         message.setFrom(new InternetAddress(fromAddress));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(destination));
         message.setSubject(subject);
