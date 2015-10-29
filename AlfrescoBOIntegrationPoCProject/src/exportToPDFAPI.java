@@ -24,6 +24,7 @@ public class exportToPDFAPI {
 	
 	public static String exportReportAndUploadIntoAlfredo()
 	{
+		System.out.println("Connecting to SAP BO");
 		String fileAccessLink = "";
 		try{
 			String urlString = "http://as1-300-89:6405/biprws/logon/long";
@@ -38,16 +39,17 @@ public class exportToPDFAPI {
 				    "application/json",
 				    "UTF-8");
 			
+			System.out.println("Requesting authentication token.");
 			getToken.setRequestEntity(requestEntity);
 			
 			int statusCode1 = client.executeMethod(getToken);
 			
-			System.out.println("statusLine>>>" + statusCode1 + "......" + "\n status line \n" + getToken.getStatusLine()
-					+ "\nbody \n" + getToken.getResponseBodyAsString());
+			System.out.println("Authentication code complete. Authentication status: " + statusCode1);
 			
 			String sessionToken = getToken.getResponseBodyAsString();
 			sessionToken = sessionToken.substring(sessionToken.indexOf("AS1")-1,sessionToken.length()-1);
 			
+			System.out.println("Refreshing document to get the latest information.");
 			String refreshString = "http://as1-300-89:6405/biprws/raylight/v1/documents/7677/parameters";
 			
 			PutMethod refreshDocument = new PutMethod(refreshString);
@@ -57,9 +59,10 @@ public class exportToPDFAPI {
 			refreshDocument.addRequestHeader("X-SAP-LogonToken", sessionToken);
 
 			int statusCodeRef = client.executeMethod(refreshDocument);
-			System.out.println("statusLine>>>" + statusCodeRef + "......" + "\n status line \n" + refreshDocument.getStatusLine()
-			  + "\nbody \n" + refreshDocument.getResponseBodyAsString());
 			
+			System.out.println("Refresh successful. Status code: " + statusCodeRef);
+			
+			System.out.println("Requesting document to be exported");
 			String exportString = "http://as1-300-89:6405/biprws/raylight/v1/documents/7677/";
 			GetMethod getPDF = new GetMethod(exportString);
 			
@@ -68,16 +71,20 @@ public class exportToPDFAPI {
 			
 			int statusCode2 = client.executeMethod(getPDF);
 			
-			System.out.println("statusLine>>>" + statusCode2 + "......" + "\n status line \n" + getPDF.getStatusLine());
+			System.out.println("Document exported successfully. Status Code: " + statusCode2);
 			
 			File pdf = writeBytes(getPDF.getResponseBody(), "AlfrescoWebIReportWithMetadata");
+			
+			System.out.println("Connecting to Alfresco.");
 			
 			String alfrescoTiccketURL = "http://172.18.23.64:8080/alfresco" + "/service/api/login?u=" + "admin" + "&pw="
 					+ "admin";
 			String ticketURLResponse = getTicket(alfrescoTiccketURL);
-
+			
 			fileAccessLink = uploadDocument(ticketURLResponse, pdf, "AlfrescoWebIReportWithMetadata.pdf", "application/pdf", "description",
 					"workspace://SpacesStore/60273b3a-b9f2-42d9-bc2d-9697246bdacd");
+			
+			System.out.println("Uploading pdf successful. File Access link created");
 			
 			String logOffString = "http://as1-300-89:6405/biprws/logoff";
 			
@@ -88,8 +95,7 @@ public class exportToPDFAPI {
 			
 			int statusCode3 = client.executeMethod(logOff);
 			
-			System.out.println("statusLine>>>" + statusCode3 + "......" + "\n status line \n" + logOff.getStatusLine()
-					+ "\nbody \n" + logOff.getResponseHeaders().toString());			
+			System.out.println("Logging off SAP BO. Status code: " + statusCode3);			
 			
 			getToken.releaseConnection();
 		} catch (Exception e){
@@ -116,7 +122,7 @@ public class exportToPDFAPI {
 		try {
 
 			String urlString = "http://172.18.23.64:8080/alfresco/service/api/upload?alf_ticket=" + authTicket;
-			System.out.println("The upload url:::" + urlString);
+			//System.out.println("The upload url:::" + urlString);
 			HttpClient client = new HttpClient();
 			PostMethod mPost = new PostMethod(urlString);
 
@@ -153,6 +159,7 @@ public class exportToPDFAPI {
 		String ticketURLResponse = null;
 
 		try {
+			System.out.println("Requesting authentication ticket.");
 			int status = client.executeMethod(httpget);
 
 			if (status != HttpStatus.SC_OK) {
@@ -160,12 +167,12 @@ public class exportToPDFAPI {
 			}
 
 			response = new String(httpget.getResponseBodyAsString());
-			System.out.println("response = " + response);
+			//System.out.println("response = " + response);
 
 			int startindex = response.indexOf("_") - 6;
 			int endindex = response.indexOf("/") - 1;
 			ticketURLResponse = response.substring(startindex, endindex);
-			System.out.println("ticket = " + ticketURLResponse);
+			System.out.println("Authentication ticket received successfully");
 
 		} finally {
 			httpget.releaseConnection();
